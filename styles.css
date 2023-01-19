@@ -1,0 +1,13 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.title {
+    font-weight: bold;
+    border: 1px solid red;
+    padding: 20px;
+    margin-bottom: 20px;
+}
