@@ -1,10 +1,13 @@
 // setInterval & setTimeout
 
 // setTimeout(() => console.log("Delayed for 1 second"), 1000);
+// setTimeout(() => console.log("Delayed for 0.5 second"), 500);
+// console.log("hello");
 
 // setInterval(() => console.log("Invoke every 1 second"), 1000);
 
 // Promise
+
 let promise1 = new Promise(function (resolve, reject) {});
 
 let promise2 = new Promise((resolve, reject) => {});
@@ -12,14 +15,12 @@ let promise2 = new Promise((resolve, reject) => {});
 let greetingPromise = new Promise((resolve, reject) => {
   setTimeout(() => {
     resolve("Hello, World");
-  }, 5000);
+  }, 3000);
 });
-
 // if we print the promise:
-// console.log(greetingPromise);
+// console.log(greetingPromise); // pending status
 
 // .then
-
 // greetingPromise.then((value) => {
 //   console.log(value);
 // });
@@ -33,10 +34,15 @@ let greetingPromise = new Promise((resolve, reject) => {
 // we can do multiple .then
 
 // greetingPromise
-//   .then((value) => `${value} and you`)
-//   .then((value) => `${value} and you again`)
-//   .then((value) => `${value} and again`)
-//   .then((value) => `${value} and again`)
+//   .then((value) => `${value} 1`)
+//   .then((value) => `${value} 2`)
+//   .then((value) => {
+//     let test = value;
+//     console.log(test, "test");
+//     return value;
+//   })
+//   .then((value) => `${value} 3`)
+//   .then((value) => `${value} 4`)
 //   .then((value) => console.log(value))
 //   .catch((err) => {
 //     console.log(err);
@@ -48,21 +54,21 @@ let greetingPromise = new Promise((resolve, reject) => {
 // let greetingPromise2 = new Promise((resolve, reject) => {
 //   setTimeout(() => {
 //     reject(Error("Something went wrong"));
-//   }, 5000);
+//   }, 2000);
 // });
 
-// greetingPromise2.catch((error) => console.error(error));
+// greetingPromise2.catch((err) => console.error(err));
 // Error (Output): Something went wrong
 
-// function checkMail() {
-//   return new Promise((resolve, reject) => {
-//     if (Math.random() > 0.5) {
-//       resolve("Mail not arrived");
-//     } else {
-//       reject(new Error("Failed to arrive"));
-//     }
-//   });
-// }
+function checkMail() {
+  return new Promise((resolve, reject) => {
+    if (Math.random() > 0.5) {
+      resolve("Mail not arrived");
+    } else {
+      reject(new Error("Failed to arrive"));
+    }
+  });
+}
 
 // .finally
 
@@ -77,24 +83,30 @@ let greetingPromise = new Promise((resolve, reject) => {
 
 // async await
 
-const getData = () => {
+const getData = (num) => {
   return new Promise((resolve, reject) => {
-    setTimeout(() => resolve({ value: "some data" }));
+    setTimeout(() => {
+      if (num > 5) resolve({ value: "some data" });
+      else reject(new Error("Data failed to arrive"));
+    });
   }, 2000);
 };
 
 // const processData = async () => {
-//   const data = await getData();
-//   console.log(data);
+//   console.log("1 before getData");
+//   const data = await getData(2);
+//   console.log(data, "2 data");
+//   console.log("3 after getData");
 // };
 
-const processData = () => {
-  getData().then((data) => {
-    console.log(data);
-  });
-};
-
 // processData();
+// console.log("4 after processData");
+
+// const processData = () => {
+//   getData().then((data) => {
+//     console.log(data);
+//   });
+// };
 
 // try and catch in async & await
 
@@ -104,6 +116,7 @@ const processData2 = async () => {
     console.log(data);
   } catch (error) {
     console.error(error);
+    // invokeSomeFucn()
   }
 };
 
@@ -127,9 +140,9 @@ const getData4 = () => {
   }, 1000);
 };
 
-// Promise.all([getData2(), getData3(), getData4()])
-//   .then((values) => console.log(values))
-//   .catch((error) => console.error(error));
+Promise.all([getData2(), getData3(), getData4()])
+  .then((values) => console.log(values))
+  .catch((error) => console.error(error));
 
 // #1
 
@@ -149,20 +162,19 @@ const getData4 = () => {
 // #2
 //example of setInterval
 
-// const myInterval = setInterval(myTimer, 1000);
+const messageContainer = document.getElementById("demo");
 
-// const messageContainer = document.getElementById("demo");
+let counter = 0;
 
-// let counter = 0;
+function myTimer() {
+  messageContainer.innerHTML = `Count: ${counter}`;
+  counter++;
+}
+const myInterval = setInterval(myTimer, 1000);
 
-// function myTimer() {
-//   messageContainer.innerHTML = `Count: ${counter}`;
-//   counter++;
-// }
-
-// function stopInterval() {
-//   clearInterval(myInterval);
-// }
+function stopInterval() {
+  clearInterval(myInterval);
+}
 
 // #3 - async await + try catch
 
@@ -197,11 +209,16 @@ const getData4 = () => {
 
 async function getCountries() {
   try {
-    const res = await axios.get("https://restcountries.com/v2/all");
-    console.log(res);
+    const countriesDataObj = await axios.get(
+      //   "https://restcountries.com/v3.1/name/israel"
+      "https://restcountries.com/v2/all"
+    );
+    const countriesData = countriesDataObj.data;
+    console.log(countriesData);
   } catch (err) {
     console.error(err);
   }
 }
 
-// getCountries();
+getCountries();
+console.log("hello");
